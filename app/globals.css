@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Hammersmith+One&display=swap');
+
+:root { --orange: #ff7227; --ink: #0d0d0d; --paper: #fdfdfd; --display: "Hammersmith One", Arial, sans-serif; }
+* { box-sizing: border-box; }
+html, body { min-height: 100%; margin: 0; }
+body { color: var(--ink); background: var(--orange); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+button, input, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.gradient-page { min-height: 100dvh; background: linear-gradient(138deg, #e30082 0%, #f01c70 23%, #ff5362 54%, #ff7227 100%); padding: max(28px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; align-items: center; }
+.message-page { justify-content: center; gap: clamp(44px, 8vh, 100px); }
+.message-shell { width: min(100%, 660px); }
+.message-form { width: 100%; }
+.message-card { overflow: hidden; background: #fff; border-radius: 28px; box-shadow: 0 20px 45px rgba(83, 2, 45, .2); }
+.message-header { min-height: 151px; padding: 34px 30px 27px; display: flex; justify-content: center; align-items: center; gap: 15px; text-align: left; }
+.avatar { width: 46px; height: 46px; flex: 0 0 46px; display: grid; place-items: center; border-radius: 50%; background: #dedede; color: #a3a3a3; font-size: 30px; line-height: 1; }
+.message-header p { margin: 0 0 3px; font-size: 17px; font-weight: 800; letter-spacing: -.02em; }
+.message-header h1 { max-width: 330px; margin: 0; font: 25px/1.12 var(--display); letter-spacing: -.03em; }
+.composer { position: relative; min-height: 180px; padding: 21px 21px 43px; background: linear-gradient(120deg, #ffd9e0, #ffd2d6 53%, #ffcca9); border-radius: 0 0 28px 28px; }
+.composer textarea { width: 100%; height: 115px; resize: none; border: 0; border-radius: 13px; padding: 14px 15px; color: var(--ink); background: rgba(255,255,255,.88); box-shadow: inset 0 0 0 1px rgba(128,44,61,.07); font-size: 16px; line-height: 1.35; }
+.composer textarea::placeholder { color: #994d60; opacity: 1; }
+.composer textarea:focus-visible { outline-color: var(--ink); }
+.composer-tools { position: absolute; right: 18px; bottom: 10px; display: flex; align-items: center; gap: 13px; }
+.counter { color: #8a5560; font-size: 12px; font-weight: 650; }
+.dice-button { width: 34px; height: 30px; border: 0; border-radius: 9px; color: #7f2839; background: rgba(255,255,255,.74); cursor: pointer; font-size: 22px; line-height: 1; transition: transform .15s ease, background .15s ease; }
+.dice-button:hover { transform: rotate(12deg) scale(1.06); background: #fff; }
+.send-button, .join-button { width: 100%; min-height: 49px; margin-top: 12px; border: 0; border-radius: 999px; color: #fff; background: var(--ink); cursor: pointer; font: 16px var(--display); letter-spacing: .01em; box-shadow: 0 5px 0 rgba(62, 0, 32, .18); transition: transform .15s ease, box-shadow .15s ease; }
+.send-button:hover, .join-button:hover { transform: translateY(-1px); box-shadow: 0 7px 0 rgba(62, 0, 32, .17); }
+.send-button:disabled, .join-button:disabled { cursor: wait; opacity: .68; transform: none; }
+.privacy-note { max-width: 430px; margin: 13px auto 0; color: rgba(255,255,255,.92); text-align: center; font-size: 13px; line-height: 1.4; }
+.success-state { align-content: center; justify-items: center; min-height: 180px; text-align: center; color: #732d3f; }
+.success-state > span { font-size: 24px; }
+.success-state strong { display: block; font: 21px var(--display); }
+.text-button { margin-top: 9px; padding: 4px; border: 0; color: var(--ink); background: transparent; text-decoration: underline; cursor: pointer; font-size: 14px; }
+.form-error { margin: 10px 4px 0; color: #fff; text-align: center; font-size: 14px; font-weight: 700; }
+.conversion { width: min(100%, 550px); text-align: center; }
+.conversion-kicker { margin: 0 0 14px; color: #fff; font: 20px/1.2 var(--display); text-shadow: 0 1px 8px rgba(87, 0, 44, .18); }
+.cta-button { display: grid; min-height: 67px; place-items: center; border-radius: 999px; color: #fff; background: var(--ink); text-decoration: none; font: 23px var(--display); box-shadow: 0 9px 0 rgba(76, 0, 37, .17); transition: transform .15s ease; }
+.cta-button:hover { transform: translateY(-2px); }
+.site-footer { display: grid; justify-items: center; gap: 10px; }
+.footer-logo { width: 95px; height: auto; }
+.footer-links { display: flex; gap: 17px; }
+.footer-links button { padding: 2px; border: 0; color: rgba(255,255,255,.92); background: transparent; cursor: pointer; font-size: 12px; text-decoration: underline; }
+.honeypot { position: absolute !important; left: -9999px !important; opacity: 0 !important; pointer-events: none !important; }
+.modal-backdrop { position: fixed; z-index: 5; inset: 0; display: grid; place-items: center; padding: 22px; background: rgba(13,13,13,.52); }
+.legal-modal { position: relative; width: min(100%, 390px); padding: 28px; border-radius: 22px; background: var(--paper); box-shadow: 0 22px 60px rgba(0,0,0,.3); }
+.legal-modal h2 { margin: 0 0 9px; font-family: var(--display); }.legal-modal p { margin: 0; line-height: 1.55; font-size: 14px; }.close-modal { position: absolute; top: 8px; right: 12px; border: 0; background: transparent; color: var(--ink); cursor: pointer; font-size: 28px; }
+.waitlist-page { justify-content: center; }
+.waitlist-panel { width: min(100%, 520px); margin: 18px 0; padding: clamp(28px, 7vw, 47px); border-radius: 30px; background: var(--paper); box-shadow: 0 24px 55px rgba(79, 0, 43, .22); }
+.panel-logo { display: block; width: 122px; height: auto; margin: 0 auto 30px; }
+.waitlist-panel h1 { margin: 0; text-align: center; font: clamp(29px, 7.6vw, 40px)/1.05 var(--display); letter-spacing: -.04em; }
+.lead { max-width: 390px; margin: 16px auto 27px; color: #4d4d4d; text-align: center; font-size: 15px; line-height: 1.45; }
+.waitlist-form { display: grid; gap: 16px; }.field { display: grid; gap: 6px; }.field label { font-size: 14px; font-weight: 750; }.field label span { color: #777; font-weight: 500; }.field input { min-height: 48px; border: 1.5px solid #d2d2d2; border-radius: 12px; padding: 10px 12px; color: var(--ink); background: #fff; }.field input:focus-visible { outline-color: var(--orange); border-color: var(--orange); }.field small { color: #777; font-size: 12px; }.checkbox { display: flex; align-items: flex-start; gap: 9px; color: #303030; font-size: 14px; line-height: 1.35; cursor: pointer; }.checkbox input { width: 17px; height: 17px; margin: 1px 0 0; accent-color: var(--orange); }.join-button { margin-top: 2px; min-height: 53px; background: var(--orange); box-shadow: 0 5px 0 #d85a18; }.join-button:hover { box-shadow: 0 7px 0 #d85a18; }.dark-error { color: #b42318; text-align: left; }.waitlist-success { padding: 28px 4px 17px; text-align: center; }.waitlist-success > span { color: var(--orange); font-size: 27px; }.waitlist-success h2 { margin: 7px 0; font: 27px var(--display); }.waitlist-success p { margin: 0; color: #555; }.back-link { display: block; width: fit-content; margin: 28px auto 0; color: #5b3a32; font-size: 14px; text-underline-offset: 3px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+@media (max-width: 420px) { .gradient-page { padding-left: 15px; padding-right: 15px; }.message-page { gap: 46px; }.message-header { min-height: 129px; padding: 27px 20px 23px; }.message-header h1 { font-size: 22px; }.composer { min-height: 172px; padding: 17px 17px 41px; }.composer textarea { height: 111px; }.cta-button { min-height: 61px; font-size: 20px; }.waitlist-panel { border-radius: 25px; padding: 29px 23px; } }
+@media (min-width: 760px) { .message-page { padding-top: 48px; padding-bottom: 35px; }.site-footer { position: absolute; bottom: 28px; }.message-header { min-height: 165px; }.composer { min-height: 194px; }.composer textarea { height: 128px; } }
