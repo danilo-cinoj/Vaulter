@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { isRateLimited } from "@/lib/rate-limit";
 import { getSupabase } from "@/lib/supabase-server";
 import { messageSchema } from "@/lib/validation";
+import { normalizeHandle } from "@/lib/validation";
 
 export const runtime = "nodejs";
 
@@ -25,6 +26,7 @@ export async function POST(request: NextRequest) {
 
   const rawImage = form.get("image");
   const image = rawImage instanceof File && rawImage.size > 0 ? rawImage : null;
+  const recipientHandle = typeof form.get("recipientHandle") === "string" ? normalizeHandle(String(form.get("recipientHandle"))) : "";
   const parsed = messageSchema.safeParse({
     body: typeof form.get("body") === "string" ? form.get("body") : "",
     hasImage: Boolean(image),
@@ -32,6 +34,7 @@ export async function POST(request: NextRequest) {
   });
   if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalid message." }, { status: 400 });
   if (parsed.data.website) return NextResponse.json({ ok: true });
+  if (!recipientHandle) return NextResponse.json({ error: "This message link is unavailable." }, { status: 404 });
 
   let imageBytes: Uint8Array | null = null;
   let imageInfo: { extension: string; contentType: string } | null = null;
@@ -44,9 +47,12 @@ export async function POST(request: NextRequest) {
 
   try {
     const supabase = getSupabase();
+    const { data: creator, error: creatorError } = await supabase.from("creators").select("id").eq("handle", recipientHandle).maybeSingle();
+    if (creatorError) throw creatorError;
+    if (!creator) return NextResponse.json({ error: "This message link is unavailable." }, { status: 404 });
     let imagePath: string | null = null;
     if (imageBytes && imageInfo) {
-      imagePath = `danilocinoj/${Date.now()}-${crypto.randomUUID()}.${imageInfo.extension}`;
+      imagePath = `${recipientHandle}/${Date.now()}-${crypto.randomUUID()}.${imageInfo.extension}`;
       const { error: uploadError } = await supabase.storage.from("message-images").upload(imagePath, imageBytes, {
         contentType: imageInfo.contentType,
         cacheControl: "31536000",
@@ -57,7 +63,7 @@ export async function POST(request: NextRequest) {
 
     const { error } = await supabase.from("messages").insert({
       body: parsed.data.body,
-      recipient_handle: "danilocinoj",
+      recipient_handle: recipientHandle,
       image_path: imagePath,
       image_content_type: imageInfo?.contentType ?? null,
     });

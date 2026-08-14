@@ -1,7 +1,7 @@
-import { DashboardApp } from "@/components/dashboard-app";
+import { redirect } from "next/navigation";
 
 export const metadata = { title: "Vaulter — creator vault" };
 
 export default function DashboardPage() {
-  return <DashboardApp />;
+  redirect("/");
 }

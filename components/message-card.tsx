@@ -10,7 +10,7 @@ const prompts = [
   "do u believe in second chances?",
 ];
 
-export function MessageCard() {
+export function MessageCard({ handle }: { handle: string }) {
   const [message, setMessage] = useState("");
   const [promptIndex, setPromptIndex] = useState(prompts.length - 1);
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
@@ -52,6 +52,7 @@ export function MessageCard() {
     setError("");
     const formData = new FormData(event.currentTarget);
     formData.set("body", trimmed);
+    formData.set("recipientHandle", handle);
     if (image) formData.set("image", image);
     try {
       const response = await fetch("/api/messages", {
@@ -81,7 +82,7 @@ export function MessageCard() {
       <div className="message-card">
         <header className="message-header">
           <span className="avatar" aria-hidden="true">◉</span>
-          <div><p>@danilocinoj</p><h1>send me anonymous messages!</h1></div>
+          <div><p>@{handle}</p><h1>send me anonymous messages!</h1></div>
         </header>
         {status === "sent" ? (
           <div className="composer success-state" role="status" aria-live="polite">

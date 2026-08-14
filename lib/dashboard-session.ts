@@ -1,5 +1,5 @@
 import "server-only";
-import { createHmac, timingSafeEqual } from "crypto";
+import { createHmac, scryptSync, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
 
 const COOKIE_NAME = "vaulter_creator_session";
@@ -15,16 +15,18 @@ function sign(value: string) {
   return createHmac("sha256", sessionSecret()).update(value).digest("base64url");
 }
 
-export function accessKeyIsValid(key: unknown) {
-  const expected = process.env.DASHBOARD_ACCESS_KEY;
-  if (!expected || typeof key !== "string") return false;
-  const expectedBytes = Buffer.from(expected);
-  const receivedBytes = Buffer.from(key);
-  return expectedBytes.length === receivedBytes.length && timingSafeEqual(expectedBytes, receivedBytes);
+export function hashCreatorKey(key: string, handle: string) {
+  return scryptSync(key, `${handle}:${sessionSecret()}`, 64).toString("hex");
 }
 
-export function createDashboardSession() {
-  const payload = Buffer.from(JSON.stringify({ createdAt: Date.now() })).toString("base64url");
+export function creatorKeyIsValid(key: string, handle: string, storedHash: string) {
+  const received = Buffer.from(hashCreatorKey(key, handle), "hex");
+  const expected = Buffer.from(storedHash, "hex");
+  return received.length === expected.length && timingSafeEqual(received, expected);
+}
+
+export function createDashboardSession(handle: string) {
+  const payload = Buffer.from(JSON.stringify({ createdAt: Date.now(), handle })).toString("base64url");
   return `${payload}.${sign(payload)}`;
 }
 
@@ -38,20 +40,21 @@ export function dashboardCookieOptions() {
   };
 }
 
-export function hasDashboardSession() {
+export function getDashboardSession(): { handle: string } | null {
   const raw = cookies().get(COOKIE_NAME)?.value;
-  if (!raw) return false;
+  if (!raw) return null;
   const [payload, signature] = raw.split(".");
-  if (!payload || !signature) return false;
+  if (!payload || !signature) return null;
   const expected = sign(payload);
   const expectedBytes = Buffer.from(expected);
   const signatureBytes = Buffer.from(signature);
-  if (expectedBytes.length !== signatureBytes.length || !timingSafeEqual(expectedBytes, signatureBytes)) return false;
+  if (expectedBytes.length !== signatureBytes.length || !timingSafeEqual(expectedBytes, signatureBytes)) return null;
   try {
-    const { createdAt } = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
-    return typeof createdAt === "number" && Date.now() - createdAt < MAX_AGE_SECONDS * 1000;
+    const { createdAt, handle } = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
+    if (typeof createdAt !== "number" || typeof handle !== "string" || Date.now() - createdAt >= MAX_AGE_SECONDS * 1000) return null;
+    return { handle };
   } catch {
-    return false;
+    return null;
   }
 }
 

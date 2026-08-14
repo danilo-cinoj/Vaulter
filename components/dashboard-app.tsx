@@ -142,18 +142,19 @@ async function makeStory(message: VaultMessage) {
   return new File([blob], "vaulter-anonymous-response.png", { type: "image/png" });
 }
 
-export function DashboardApp() {
+export function DashboardApp({ handle }: { handle: string }) {
   const [messages, setMessages] = useState<VaultMessage[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [state, setState] = useState<"loading" | "locked" | "ready">("loading");
   const [key, setKey] = useState("");
   const [error, setError] = useState("");
   const [exporting, setExporting] = useState(false);
+  const [linkStatus, setLinkStatus] = useState("");
   const selected = useMemo(() => messages.find((message) => message.id === selectedId) ?? messages[0] ?? null, [messages, selectedId]);
 
   async function loadMessages() {
     setState("loading");
-    const response = await fetch("/api/dashboard/messages", { cache: "no-store" });
+    const response = await fetch(`/api/dashboard/messages?handle=${encodeURIComponent(handle)}`, { cache: "no-store" });
     if (response.status === 401) return setState("locked");
     const result = await response.json();
     if (!response.ok) {
@@ -170,7 +171,7 @@ export function DashboardApp() {
   async function unlock(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
-    const response = await fetch("/api/dashboard/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key }) });
+    const response = await fetch("/api/dashboard/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key, handle }) });
     const result = await response.json();
     if (!response.ok) return setError(result.error || "Couldn’t unlock the vault.");
     setKey("");
@@ -200,8 +201,21 @@ export function DashboardApp() {
     }
   }
 
-  if (state === "loading") return <main className="dashboard-page"><p className="dashboard-loading">Opening your vault…</p></main>;
-  if (state === "locked") return <main className="dashboard-page"><section className="dashboard-lock"><img src="/vaulter-orange-black.svg" alt="Vaulter" /><p className="eyebrow">CREATOR VAULT</p><h1>Your responses, privately.</h1><p>Enter your creator key to view anonymous messages and turn one into a story image.</p><form onSubmit={unlock}><label htmlFor="creator-key">Creator key</label><input id="creator-key" type="password" value={key} onChange={(event) => setKey(event.target.value)} autoComplete="current-password" required /><button type="submit">Unlock the vault</button>{error && <p className="dashboard-error" role="alert">{error}</p>}</form></section></main>;
+  async function shareMessageLink() {
+    const url = `${window.location.origin}/m/${handle}`;
+    try {
+      if (navigator.share) await navigator.share({ title: "Send me anonymous messages", url });
+      else {
+        await navigator.clipboard.writeText(url);
+        setLinkStatus("Message link copied!");
+      }
+    } catch {
+      // Dismissing the native share sheet should remain quiet.
+    }
+  }
 
-  return <main className="dashboard-page"><div className="dashboard-top"><div><img src="/vaulter-orange-white.svg" alt="Vaulter" /><p>CREATOR VAULT · @danilocinoj</p></div><button className="logout-button" onClick={async () => { await fetch("/api/dashboard/logout", { method: "POST" }); void loadMessages(); }}>Lock vault</button></div><section className="dashboard-grid"><aside className="response-list"><div className="list-heading"><div><p className="eyebrow">INBOX</p><h1>{messages.length} response{messages.length === 1 ? "" : "s"}</h1></div></div>{messages.length === 0 ? <p className="empty-vault">Your first anonymous response will appear here.</p> : messages.map((message) => <button key={message.id} className={`response-row ${message.id === selected?.id ? "selected" : ""}`} onClick={() => setSelectedId(message.id)}><span className="response-row-copy">{message.body?.trim() || "Anonymous photo"}</span>{message.imageUrl && <span className="photo-stack"><img src={message.imageUrl} alt="Attached anonymous photo" /></span>}<time>{dateLabel(message.created_at)}</time></button>)}</aside><section className="story-studio"><div className="studio-heading"><div><p className="eyebrow">STORY MAKER</p><h2>Ready to share</h2></div><p>Exported at 1080 × 1920</p></div>{selected ? <><div className="story-preview" aria-label="Instagram story preview"><div className="story-card"><div className="story-banner">Send me anonymous messages!</div><div className="story-response"><p>{selected.body?.trim() || "an anonymous visual message ✦"}</p>{selected.imageUrl && <div className="story-polaroid"><img src={selected.imageUrl} alt="Anonymous submitted photo" /><span>anonymous photo</span></div>}</div></div><div className="story-brand"><span>⌁</span> Vaulter</div></div><div className="story-actions"><button onClick={() => void exportStory(false)} disabled={exporting}>{exporting ? "Creating…" : "Download story"}</button><button className="share-button" onClick={() => void exportStory(true)} disabled={exporting}>{exporting ? "Creating…" : "Share story"}</button></div></> : <div className="empty-story">Choose a response to make a story.</div>}{error && <p className="dashboard-error" role="alert">{error}</p>}</section></section></main>;
+  if (state === "loading") return <main className="dashboard-page"><p className="dashboard-loading">Opening your vault…</p></main>;
+  if (state === "locked") return <main className="dashboard-page"><section className="dashboard-lock"><img src="/vaulter-orange-black.svg" alt="Vaulter" /><p className="eyebrow">CREATOR VAULT · @{handle}</p><h1>Your responses, privately.</h1><p>Enter your creator key to view anonymous messages and turn one into a story image.</p><form onSubmit={unlock}><label htmlFor="creator-key">Creator key</label><input id="creator-key" type="password" value={key} onChange={(event) => setKey(event.target.value)} autoComplete="current-password" required /><button type="submit">Unlock the vault</button>{error && <p className="dashboard-error" role="alert">{error}</p>}</form></section></main>;
+
+  return <main className="dashboard-page"><div className="dashboard-top"><div><img src="/vaulter-orange-white.svg" alt="Vaulter" /><p>CREATOR VAULT · @{handle}</p></div><div className="dashboard-top-actions"><button className="share-link-button" onClick={() => void shareMessageLink()}>Share my link</button><button className="logout-button" onClick={async () => { await fetch("/api/dashboard/logout", { method: "POST" }); void loadMessages(); }}>Lock vault</button></div></div>{linkStatus && <p className="link-status" role="status">{linkStatus}</p>}<section className="your-link"><span>Your anonymous-message link</span><code>{typeof window === "undefined" ? `/m/${handle}` : `${window.location.origin}/m/${handle}`}</code><button onClick={async () => { await navigator.clipboard.writeText(`${window.location.origin}/m/${handle}`); setLinkStatus("Message link copied!"); }}>Copy link</button></section><section className="dashboard-grid"><aside className="response-list"><div className="list-heading"><div><p className="eyebrow">INBOX</p><h1>{messages.length} response{messages.length === 1 ? "" : "s"}</h1></div></div>{messages.length === 0 ? <p className="empty-vault">Your first anonymous response will appear here.</p> : messages.map((message) => <button key={message.id} className={`response-row ${message.id === selected?.id ? "selected" : ""}`} onClick={() => setSelectedId(message.id)}><span className="response-row-copy">{message.body?.trim() || "Anonymous photo"}</span>{message.imageUrl && <span className="photo-stack"><img src={message.imageUrl} alt="Attached anonymous photo" /></span>}<time>{dateLabel(message.created_at)}</time></button>)}</aside><section className="story-studio"><div className="studio-heading"><div><p className="eyebrow">STORY MAKER</p><h2>Ready to share</h2></div><p>Exported at 1080 × 1920</p></div>{selected ? <><div className="story-preview" aria-label="Instagram story preview"><div className="story-card"><div className="story-banner">Send me anonymous messages!</div><div className="story-response"><p>{selected.body?.trim() || "an anonymous visual message ✦"}</p>{selected.imageUrl && <div className="story-polaroid"><img src={selected.imageUrl} alt="Anonymous submitted photo" /><span>anonymous photo</span></div>}</div></div><div className="story-brand"><span>⌁</span> Vaulter</div></div><div className="story-actions"><button onClick={() => void exportStory(false)} disabled={exporting}>{exporting ? "Creating…" : "Download story"}</button><button className="share-button" onClick={() => void exportStory(true)} disabled={exporting}>{exporting ? "Creating…" : "Share story"}</button></div></> : <div className="empty-story">Choose a response to make a story.</div>}{error && <p className="dashboard-error" role="alert">{error}</p>}</section></section></main>;
 }

@@ -37,3 +37,14 @@ export const waitlistSchema = z
   });
 
 export const normalizePhone = (value: string) => value.replace(/[\s()-]/g, "");
+
+export const normalizeHandle = (value: string) => value.trim().toLowerCase().replace(/^@/, "");
+
+const reservedHandles = new Set(["api", "dashboard", "m", "waitlist", "create", "terms", "privacy"]);
+
+export const creatorSchema = z.object({
+  handle: z.string().transform(normalizeHandle).pipe(z.string().regex(/^[a-z0-9_]{3,30}$/, "Use 3–30 lowercase letters, numbers, or underscores.")),
+  key: z.string().min(8, "Use at least 8 characters for your creator key.").max(200),
+}).superRefine((value, context) => {
+  if (reservedHandles.has(value.handle)) context.addIssue({ code: z.ZodIssueCode.custom, message: "That link name isn’t available.", path: ["handle"] });
+});

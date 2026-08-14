@@ -5,11 +5,11 @@ Mobile-first anonymous-message and waitlist pages, built with Next.js and Supaba
 ## Local setup
 
 1. `npm install`
-2. Create a Supabase project and run both SQL files in `supabase/migrations/` in filename order in its SQL Editor. The second migration adds a private `message-images` bucket for anonymous photo uploads.
-3. Copy `.env.example` to `.env.local`, set the Supabase values from Project Settings → API, then set a private `DASHBOARD_ACCESS_KEY` and a long random `DASHBOARD_SESSION_SECRET`.
+2. Create a Supabase project and run all SQL files in `supabase/migrations/` in filename order in its SQL Editor. The second migration adds a private `message-images` bucket; the third creates creator accounts and custom links.
+3. Copy `.env.example` to `.env.local`, set the Supabase values from Project Settings → API, then set a long random `DASHBOARD_SESSION_SECRET`.
 4. Run `npm run dev`, then open `http://localhost:3000`.
 
-All environment values are server-only. Do not add `NEXT_PUBLIC_` to them and never commit `.env.local`. Open `/dashboard` and enter `DASHBOARD_ACCESS_KEY` to access the creator vault.
+All environment values are server-only. Do not add `NEXT_PUBLIC_` to them and never commit `.env.local`. Visit `/` to create a custom `/m/handle` message link and private creator key; the creator key opens `/dashboard/handle`.
 
 ## Deploy
 
@@ -17,4 +17,4 @@ Push this project to GitHub, import it in Vercel, and add the same two environme
 
 ## Notes
 
-The API has server-side Zod validation, a hidden honeypot, and a lightweight in-memory IP rate limit. Images accept only JPEG, PNG, or WebP files up to 8 MB; their byte signatures are verified on the server and the bucket is private. The `/dashboard` route uses a signed, http-only 12-hour creator session and generates a 1080 × 1920 PNG for download or native mobile sharing. For higher traffic, add rate limiting at the edge (e.g. Vercel WAF/Upstash) because in-memory limits are per server instance.
+The API has server-side Zod validation, a hidden honeypot, and a lightweight in-memory IP rate limit. Images accept only JPEG, PNG, or WebP files up to 8 MB; their byte signatures are verified on the server and the bucket is private. The dashboard uses a signed, http-only 12-hour creator session and generates a 1080 × 1920 PNG for download or native mobile sharing. For higher traffic, add rate limiting at the edge (e.g. Vercel WAF/Upstash) because in-memory limits are per server instance.
