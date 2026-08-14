@@ -101,8 +101,12 @@ export function MessageCard() {
               <button className="dice-button" type="button" onClick={pickPrompt} aria-label="Suggest a message idea" title="Suggest a message idea">⚄</button>
             </div>
             <div className="image-actions">
-              <button type="button" onClick={() => uploadInput.current?.click()} disabled={status === "sending"}>Add photo</button>
-              <button type="button" onClick={() => cameraInput.current?.click()} disabled={status === "sending"}>Take photo</button>
+              <button type="button" onClick={() => uploadInput.current?.click()} disabled={status === "sending"} aria-label="Add a photo" title="Add a photo">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h3l1.4-2h7.2l1.4 2h3A1.5 1.5 0 0 1 21.5 8v10.5A1.5 1.5 0 0 1 20 20H4a1.5 1.5 0 0 1-1.5-1.5V8A1.5 1.5 0 0 1 4 6.5Z" /><circle cx="12" cy="13" r="3.5" /></svg>
+              </button>
+              <button type="button" onClick={() => cameraInput.current?.click()} disabled={status === "sending"} aria-label="Take a photo" title="Take a photo">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h10.5A2.5 2.5 0 0 1 18 7v1.2l3-1.8v11.2l-3-1.8V17a2.5 2.5 0 0 1-2.5 2.5H5A2.5 2.5 0 0 1 2.5 17V7A2.5 2.5 0 0 1 5 4.5Z" /><circle cx="10.25" cy="12" r="3" /></svg>
+              </button>
             </div>
           </div>
         )}
