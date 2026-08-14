@@ -7,8 +7,13 @@ const phone = z
   .regex(/^\+[1-9]\d{6,14}$/, "Use a valid phone number with country code, e.g. +14155552671.");
 
 export const messageSchema = z.object({
-  body: z.string().trim().min(1, "Write a message before sending.").max(300, "Keep your message under 300 characters."),
+  body: z.string().trim().max(300, "Keep your message under 300 characters."),
+  hasImage: z.boolean(),
   website: z.string().max(0).optional(),
+}).superRefine((value, context) => {
+  if (!value.body && !value.hasImage) {
+    context.addIssue({ code: z.ZodIssueCode.custom, message: "Write a message or add an image before sending.", path: ["body"] });
+  }
 });
 
 export const waitlistSchema = z

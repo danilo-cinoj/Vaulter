@@ -5,7 +5,7 @@ Mobile-first anonymous-message and waitlist pages, built with Next.js and Supaba
 ## Local setup
 
 1. `npm install`
-2. Create a Supabase project and run `supabase/migrations/20260814_create_vaulter_v1.sql` in its SQL Editor.
+2. Create a Supabase project and run both SQL files in `supabase/migrations/` in filename order in its SQL Editor. The second migration adds a private `message-images` bucket for anonymous photo uploads.
 3. Copy `.env.example` to `.env.local` and set the two values from Supabase Project Settings → API.
 4. Run `npm run dev`, then open `http://localhost:3000`.
 
@@ -17,4 +17,4 @@ Push this project to GitHub, import it in Vercel, and add the same two environme
 
 ## Notes
 
-The API has server-side Zod validation, a hidden honeypot, and a lightweight in-memory IP rate limit. For higher traffic, add rate limiting at the edge (e.g. Vercel WAF/Upstash) because in-memory limits are per server instance.
+The API has server-side Zod validation, a hidden honeypot, and a lightweight in-memory IP rate limit. Images accept only JPEG, PNG, or WebP files up to 8 MB; their byte signatures are verified on the server and the bucket is private. For higher traffic, add rate limiting at the edge (e.g. Vercel WAF/Upstash) because in-memory limits are per server instance.
