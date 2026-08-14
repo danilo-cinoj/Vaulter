@@ -91,7 +91,7 @@ async function makeStory(message: VaultMessage) {
   context.fillStyle = "#0d0d0d";
   context.textAlign = "left";
   context.font = "600 48px Arial, sans-serif";
-  const lines = wrapText(context, copy, message.imageUrl ? 470 : 710).slice(0, 6);
+  const lines = wrapText(context, copy, message.imageUrl ? 410 : 710).slice(0, 6);
   let y = cardY + 258;
   for (const line of lines) {
     context.fillText(line, cardX + 85, y);
@@ -102,40 +102,41 @@ async function makeStory(message: VaultMessage) {
     try {
       const image = await loadCanvasImage(message.imageUrl);
       context.save();
-      context.translate(760, cardY + 390);
+      context.translate(750, cardY + 405);
       context.rotate(.075);
       context.fillStyle = "#fff";
       context.shadowColor = "rgba(0,0,0,.18)";
       context.shadowBlur = 18;
       context.shadowOffsetY = 9;
-      context.fillRect(-155, -205, 310, 366);
+      context.fillRect(-205, -250, 410, 475);
       context.shadowColor = "transparent";
       context.save();
       context.beginPath();
-      context.rect(-135, -185, 270, 270);
+      context.rect(-180, -225, 360, 360);
       context.clip();
-      const scale = Math.max(270 / image.width, 270 / image.height);
+      const scale = Math.max(360 / image.width, 360 / image.height);
       context.drawImage(image, -image.width * scale / 2, -image.height * scale / 2, image.width * scale, image.height * scale);
       context.restore();
       context.fillStyle = "#ff7227";
-      context.font = "28px 'Hammersmith One', Arial, sans-serif";
+      context.font = "31px 'Hammersmith One', Arial, sans-serif";
       context.textAlign = "center";
-      context.fillText("anonymous photo", 0, 125);
+      context.fillText("anonymous photo", 0, 177);
       context.restore();
     } catch {
       // A text-only story is still useful if a signed image URL has expired.
     }
   }
 
-  context.strokeStyle = "#ff7227";
-  context.lineWidth = 10;
-  context.beginPath();
-  context.moveTo(370, 1590); context.lineTo(370, 1657); context.lineTo(429, 1619); context.lineTo(392, 1694); context.lineTo(346, 1651); context.lineTo(346, 1590); context.lineTo(370, 1614);
-  context.stroke();
-  context.fillStyle = "#fdfdfd";
-  context.textAlign = "left";
-  context.font = "68px Georgia, serif";
-  context.fillText("Vaulter", 454, 1668);
+  try {
+    const logo = await loadCanvasImage("/vaulter-orange-white.svg");
+    // The supplied logo has a square viewBox, so crop its transparent margins before placing it.
+    context.drawImage(logo, 200, 700, 1600, 650, 310, 1530, 460, 187);
+  } catch {
+    context.fillStyle = "#fdfdfd";
+    context.textAlign = "center";
+    context.font = "68px Georgia, serif";
+    context.fillText("Vaulter", 540, 1668);
+  }
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
   if (!blob) throw new Error("Couldn’t create the story image.");

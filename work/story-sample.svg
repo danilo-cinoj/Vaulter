@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2=".75">
+      <stop offset="0" stop-color="#ff7a27"/>
+      <stop offset=".56" stop-color="#ff4d1f"/>
+      <stop offset="1" stop-color="#ff1910"/>
+    </linearGradient>
+    <linearGradient id="photo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff9a59"/>
+      <stop offset=".48" stop-color="#ff4c20"/>
+      <stop offset="1" stop-color="#551124"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="20" stdDeviation="22" flood-opacity=".4"/></filter>
+    <clipPath id="photoClip"><rect x="590" y="805" width="360" height="360" rx="0"/></clipPath>
+  </defs>
+  <rect width="1080" height="1920" fill="#0d0d0d"/>
+  <rect x="82" y="565" width="916" height="665" rx="72" fill="#fdfdfd" filter="url(#shadow)"/>
+  <rect x="82" y="500" width="916" height="255" rx="112" fill="url(#header)"/>
+  <text x="540" y="647" fill="#fff" font-family="Arial, sans-serif" font-size="50" font-weight="700" text-anchor="middle">Send me anonymous messages!</text>
+  <text x="167" y="820" fill="#0d0d0d" font-family="Arial, sans-serif" font-size="48" font-weight="700">what’s a little thing</text>
+  <text x="167" y="883" fill="#0d0d0d" font-family="Arial, sans-serif" font-size="48" font-weight="700">that always makes</text>
+  <text x="167" y="946" fill="#0d0d0d" font-family="Arial, sans-serif" font-size="48" font-weight="700">you smile?</text>
+  <g transform="rotate(4 770 1020)" filter="url(#shadow)">
+    <rect x="565" y="780" width="410" height="475" fill="#fff"/>
+    <rect x="590" y="805" width="360" height="360" fill="url(#photo)"/>
+    <g clip-path="url(#photoClip)">
+      <circle cx="840" cy="880" r="160" fill="#ffbf8d" opacity=".55"/>
+      <path d="M550 1125C670 945 740 1230 950 935L950 1190H565Z" fill="#d91b31" opacity=".8"/>
+      <path d="M590 1050L740 900 880 1080 950 1010V1165H590Z" fill="#2b1026" opacity=".66"/>
+    </g>
+    <text x="770" y="1215" fill="#ff7227" font-family="Arial, sans-serif" font-size="31" font-weight="700" text-anchor="middle">anonymous photo</text>
+  </g>
+  <svg x="310" y="1530" width="460" height="187" viewBox="200 700 1600 650" preserveAspectRatio="xMidYMid meet">
+    <image href="../public/vaulter-orange-white.svg" width="2000" height="2000"/>
+  </svg>
+</svg>
