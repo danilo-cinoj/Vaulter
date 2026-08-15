@@ -16,6 +16,39 @@ This repository contains the Next.js application, its server-side API routes, an
 - Export a response as a 1080 × 1920 PNG Story image, with native sharing when supported.
 - Honeypot fields, server-side validation, and lightweight in-memory rate limiting.
 
+## Screenshots
+
+### Anonymous message & image sharing
+
+<p>
+  <img src="screenshots/anonymous-message.png" alt="Vaulter anonymous message page" width="320">
+  <img src="screenshots/anonymous-photo.png" alt="Vaulter anonymous photo response Story" width="320">
+</p>
+
+### Creator setup & dashboard
+
+<p>
+  <img src="screenshots/creator-setup.png" alt="Vaulter creator setup" width="320">
+  <img src="screenshots/creator-access.png" alt="Vaulter creator access" width="320">
+</p>
+
+<p>
+  <img src="screenshots/creator-vault.png" alt="Vaulter creator vault dashboard" width="720">
+</p>
+
+### Story exports
+
+<p>
+  <img src="screenshots/story-export-text.png" alt="Vaulter text response Story export" width="320">
+  <img src="screenshots/story-export-photo.png" alt="Vaulter photo response Story export" width="320">
+</p>
+
+### Public message page
+
+<p>
+  <img src="screenshots/public-message-page.png" alt="Vaulter public anonymous message page" width="320">
+</p>
+
 ## How it works
 
 ```text
