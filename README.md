@@ -82,15 +82,12 @@ The dashboard can copy/share the public message link and generate a Story-sized 
    1. `20260814_create_vaulter_v1.sql`
    2. `20260814_add_message_images.sql`
    3. `20260814_create_creators.sql`
-   4. `20260815_remove_legacy_contact_entries.sql`
 
 The migrations create:
 
 - `messages` for anonymous text/image records.
 - `creators` for custom handles and creator-key hashes.
 - The private `message-images` Storage bucket.
-
-The final migration is retained to remove a legacy contact-collection table from existing deployments. It is a no-op for a fresh project.
 
 They also enable Row Level Security and revoke `anon`/`authenticated` access to the app tables. Server API routes use the service-role key, which bypasses RLS and must remain private.
 
