@@ -12,5 +12,5 @@ export default async function CreatorMessagePage({ params }: { params: { handle:
   const { data } = await getSupabase().from("creators").select("handle").eq("handle", handle).maybeSingle();
   if (!data) notFound();
 
-  return <main className="gradient-page message-page"><section className="message-shell" aria-label={`Send ${handle} an anonymous message`}><MessageCard handle={handle} /><p className="privacy-note">Your name isn’t shown to @{handle}. Please keep it kind.</p></section><section className="conversion" aria-label="Try Vaulter"><p className="conversion-kicker">Anonymous text or a photo — your call.</p><a className="cta-button" href="/">Create your own Vaulter link</a></section><footer className="site-footer"><img className="footer-logo" src="/vaulter-orange-white.svg" alt="Vaulter" /><FooterLinks /></footer></main>;
+  return <main className="gradient-page message-page"><section className="message-shell" aria-label={`Send ${handle} an anonymous message`}><MessageCard handle={handle} /><p className="privacy-note">Your name isn’t shown to @{handle}. Please keep it kind.</p></section><section className="conversion" aria-label="Try Vaulter"><p className="conversion-kicker">Anonymous messages &amp; photos.</p><a className="cta-button" href="/">Create your own Vaulter link</a></section><footer className="site-footer"><FooterLinks /></footer></main>;
 }
