@@ -226,3 +226,7 @@ Contributions are welcome.
 4. Describe user-facing behavior, database migration requirements, and any environment changes in the pull request.
 
 Do not commit `.env.local`, service-role keys, session secrets, signed URLs, or real user data.
+
+## License
+
+Vaulter is open source software licensed under the [MIT License](LICENSE).
